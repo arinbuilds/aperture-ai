@@ -49,7 +49,7 @@ The sign-in screen supports email/password, email magic links, password reset, a
 
 - `/` — sign-in entry; **Enter the local demo** opens the prototype without pretending to authenticate.
 - `/studio` — video-to-form (also available from the dashboard).
-- `/analytics` — practice ratings, skill knowledge graph, evidence map, and rating history.
+- `/analytics` — practice ratings, evidence map, and rating history.
 - `/profile` — professional profile preview and featured work.
 - `/passport` — profile, projects, and evidence passport.
 - `/opportunities` — opportunity translator.
