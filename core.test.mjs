@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {analyze,INITIAL,SAMPLE,HINDI_SAMPLE,safeURL,encodePassport,decodePassport,escapeHTML} from './core.js';
+test('sample maps claims to evidence without an overall score',()=>{const r=analyze(SAMPLE,INITIAL);assert.equal(r.requirements.length,8);assert.equal(r.requirements.find(x=>x.id==='HTML').status,'demonstrated');assert.equal(r.requirements.find(x=>x.id==='Git').status,'partial');assert.equal(r.requirements.find(x=>x.id==='React').status,'missing');assert.equal(r.requirements.find(x=>x.id==='React').priority,'Preferred');assert.equal(r.score,undefined)});
+test('Hindi extracts the same supported requirements',()=>{assert.deepEqual(analyze(HINDI_SAMPLE,INITIAL).requirements.map(x=>[x.id,x.status,x.priority]),analyze(SAMPLE,INITIAL).requirements.map(x=>[x.id,x.status,x.priority]));});
+test('removing a project removes its evidence',()=>{assert.equal(analyze(SAMPLE,{...INITIAL,projects:[]}).requirements.find(x=>x.id==='HTML').status,'partial');});
+test('no accidental Git match in digital, and unknown requirements are surfaced',()=>{const r=analyze('Required: digital design and Rust.',INITIAL);assert.equal(r.requirements.length,0);assert.equal(r.unrecognized.length,1);});
+test('required takes precedence over optional mention',()=>{assert.equal(analyze('Preferred: React. Required: React.',INITIAL).requirements[0].priority,'Required');});
+test('blank project does not demonstrate a skill',()=>{assert.equal(analyze('Required: React',{skills:[],projects:[{description:' ',skills:['React'],title:'Empty'}]}).requirements[0].status,'missing');});
+test('share links preserve Hindi, validate schema, and reject malformed content',()=>{const p={...INITIAL,name:'आरव शर्मा'};assert.deepEqual(decodePassport(encodePassport(p)),p);assert.equal(decodePassport('invalid'),null);assert.equal(decodePassport(btoa('{"name":"bad"}')),null);});
+test('unsafe project protocols and injected markup are neutralized',()=>{assert.equal(safeURL('javascript:alert(1)'), '');assert.equal(safeURL('data:text/html,test'),'');assert.equal(safeURL('https://example.com'),'https://example.com/');assert.equal(escapeHTML('<script>"&'), '&lt;script&gt;&quot;&amp;');});

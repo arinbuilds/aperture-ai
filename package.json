@@ -1,0 +1,11 @@
+{
+  "name": "aperture-ai",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test *.test.mjs",
+    "check": "node --check app.js && node --check core.js && node --check classes.js && node --check classes-ui.js && node --check classes-controller.js && node --check server.mjs && node --check platform.js"
+  }
+}
